@@ -6,8 +6,8 @@
     <script src="https://unpkg.com/js-big-decimal@1.3.1/dist/web/js-big-decimal.min.js"></script>
     <script>
         function f() {
-            const e1 = document.getElementById('first').value;
-            const e2 = document.getElementById('second').value;
+            const e1 = ensureDecimal(document.getElementById('first').value);
+            const e2 = ensureDecimal(document.getElementById('second').value);
             const op = document.getElementById('operator').value;
             const decimalPoint = document.getElementById('decimalPoint').value
             document.getElementById('result').value = calculate(e1, e2, op, decimalPoint).getValue();
@@ -20,19 +20,19 @@
                 return alert("数字をいれてください")
             }
             // var f1 = bigDecimal(e1)
-            const f1 = new bigDecimal(Math.abs(e1));
+            const f1 = new bigDecimal(e1);
             const f2 = new bigDecimal(e2);
             switch (op) {
                 case 'plus':
-                    // return decimalPointCalculate(f1.add(f2), decimalPoint)
-                    return decimalPointCalculate(f1.subtract(f2), decimalPoint)
+                    return decimalPointCalculate(f1.add(f2), decimalPoint)
+                    // return decimalPointCalculate(f1.subtract(f2), decimalPoint)
                 case 'minus':
                     return decimalPointCalculate(f1.subtract(f2), decimalPoint)
                 case 'multiply':
                     return decimalPointCalculate(f1.multiply(f2), decimalPoint)
                 case 'mod':
-                    // return decimalPointCalculate(f1.divide(f2), decimalPoint)
-                    return decimalPointCalculate(f1.multiply(f2), decimalPoint)
+                    return decimalPointCalculate(f1.divide(f2), decimalPoint)
+                    // return decimalPointCalculate(f1.multiply(f2), decimalPoint)
                 case 'square':
                     return decimalPointCalculate(f1.multiply(f1), decimalPoint)
                 default :
@@ -48,8 +48,7 @@
                 return value.floor()
             }
             if(decimalPoint === 'round'){
-                 //return new bigDecimal(Math.round(value.getValue()))
-                return value.floor()
+                return value.round(0)
             }
             return value
         }
@@ -61,6 +60,18 @@
             else{
                 document.getElementById('second').disabled = false
             }
+        }
+
+        function ensureDecimal(instr) {
+            const asInt = parseInt(instr, 10);
+            if (asInt.toString() === instr) {
+                return instr + '.0';
+            }
+            const asFloat = parseFloat(instr);
+            if (asFloat.toString() === instr) {
+                return instr;
+            }
+            return NaN;
         }
     </script>
 </head>
